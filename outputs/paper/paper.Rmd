@@ -1,12 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Homocides in Toronto from 2004-2020"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
-date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+  -Justin Teng 
+thanks: "Code and data are available at: https://github.com/justinteng1999/starter_folder-main"
+date: "06 February 2022"
+abstract: "Understanding the datasets of homicides in The City of Toronto Neighborhoods are crucial for determining the distribution of police resources among the neighborhoods. From we obtain this data of homicide cases in Toronto between the years of 2004-2020. We find that except the years between 2010-2015, we have relatively high number of homicide cases.  Our findings have implication for allocation of police surveillance, police patrols, and the management of weapons registration."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -22,13 +20,119 @@ library(palmerpenguins)
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point). 
+First paragraph is going to be motivational and broad.
 
+Second Paragraph is about what was done and what was found.
 
+Third Paragraph about implication.
+
+The remainder of this paper is: Section \@ref(data) explains the data. Section \@ref(results) covers results
 
 # Data
 
-Our data is of penguins (Figure \@ref(fig:bills)).
+Paragraph or two introducing the dataset broadly.
+
+Read and clean the required data for my exploratory data analysis.
+
+```{r clean_data}
+library(tidyverse)
+library(knitr)
+
+homicide <- 
+  read.csv(here::here("inputs/data/homocide.csv"))
+
+# Clean out the unnecessary variables
+cleaned_homicide_data <-
+  homicide |>
+  select(Occurrence_year, 
+         Homicide_Type,
+         Neighbourhood)
+```
+
+Then show an extract of the dataset (Table \@ref(tab:dataextract)) .
+
+```{r dataextract}
+
+cleaned_homicide_data |> 
+  select(Occurrence_year, Neighbourhood, Homicide_Type) |>
+  slice(1:10) |> 
+  kable(
+    caption = "First ten rows of a dataset of a dataset that shows homicide occurrence",
+    col.names = c("Year of Occurrences,",
+                  "Neighborhood of Occurences", "Type of Homicide"),
+    digits = 1,
+    booktabs = TRUE,
+    linesep = ""
+  )
+```
+
+
+Paragraph or two more about Table  \@ref(tab:dataextract).
+
+
+
+We are interested in the number of homicide occurrence each year from 2004-2020, and the neighbourhoods with high number of homicide cases, as well as the type of homicide in each case. This is the measure of how homicide cases are distributed and has implications for allocation of police resources.
+
+(Figure \@ref(fig:homicideYear)) shows the number of homicide occurrence each year from 2004-2020.
+```{r}
+tibble_occurrence_year <- 
+  tibble(cleaned_homicide_data) |>
+  count(Occurrence_year)
+
+tibble_neighbourhood <- 
+  tibble(cleaned_homicide_data) |>
+  count(Neighbourhood)
+
+tibble_homicide_type <- 
+  tibble(cleaned_homicide_data) |>
+  count(Homicide_Type)
+
+```
+
+```{r homicideYear, fig.cap = "Homicide Occurrences each Year(2004-2020)", echo = FALSE}
+
+tibble_occurrence_year |> 
+  ggplot(aes(x = Occurrence_year, y = n, fill = n)) +
+  geom_col() +
+  xlab("Year of Homicide Occurrences") +
+  ylab("Number of Homicide Cases") +
+  theme_set(theme_bw())
+```
+
+(Figure \@ref(fig:homicideNeighbourhood)) shows the top 10 neighbourhoods with most number of homicide cases
+
+```{r homicideNeighbourhood, fig.cap = "Top 10 Neighbourhoods with Most Homicide Occurrences (2004-2020)", echo=FALSE}
+
+tibble_neighbourhood |> 
+  group_by(Neighbourhood, n) |>
+  arrange(desc(n)) |>
+  head(10) |>
+  ggplot(aes(x = reorder(Neighbourhood, n), 
+             y = n, 
+             fill = n)) +
+  geom_col() +
+  xlab("Neighbourhoods") +
+  ylab("Number of Homicide Cases") +
+  coord_flip() +
+  theme_set(theme_bw())
+```
+
+(Figure \@ref(fig:homicidetype)) shows number of each homicide type
+
+```{r homicidetype, fig.cap = "Type of Homicide Cases", echo=FALSE}
+
+tibble_homicide_type |>
+  ggplot(aes(reorder(x = Homicide_Type, n),
+             y = n, 
+             fill = n)) +
+  geom_col() +
+  xlab("Type of Homicide") +
+  ylab("Number of Homicide Cases") +
+  theme_set(theme_bw())
+```
+
+
+Our data is of homicide cases (Figure \@ref(fig:bills)).
 
 ```{r bills, fig.cap="Bills of penguins", echo = FALSE}
 ggplot(penguins, aes(x = island, fill = species)) +
