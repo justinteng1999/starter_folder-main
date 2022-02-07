@@ -1,7 +1,7 @@
 ---
 title: "Homocides in Toronto from 2004-2020"
 author: 
-  -Justin Teng 
+  Justin Teng 
 thanks: "Code and data are available at: https://github.com/justinteng1999/starter_folder-main"
 date: "06 February 2022"
 abstract: "Understanding the datasets of homicides in The City of Toronto Neighborhoods are crucial for determining the distribution of police resources among the neighborhoods. From we obtain this data of homicide cases in Toronto between the years of 2004-2020. We find that except the years between 2010-2015, we have relatively high number of homicide cases.  Our findings have implication for allocation of police surveillance, police patrols, and the management of weapons registration."
@@ -32,9 +32,11 @@ The remainder of this paper is: Section \@ref(data) explains the data. Section \
 
 Paragraph or two introducing the dataset broadly.
 
+We obtain our dataset from the City of Toronto open Data Portal, using the 'opendatatoronto' package[@citeopendatatoronto] and statistical programming language R [@citeR].
+
 Read and clean the required data for my exploratory data analysis.
 
-```{r clean_data}
+```{r clean_data, echo = FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(knitr)
 
@@ -51,7 +53,7 @@ cleaned_homicide_data <-
 
 Then show an extract of the dataset (Table \@ref(tab:dataextract)) .
 
-```{r dataextract}
+```{r dataextract, echo = FALSE}
 
 cleaned_homicide_data |> 
   select(Occurrence_year, Neighbourhood, Homicide_Type) |>
@@ -73,8 +75,11 @@ Paragraph or two more about Table  \@ref(tab:dataextract).
 
 We are interested in the number of homicide occurrence each year from 2004-2020, and the neighbourhoods with high number of homicide cases, as well as the type of homicide in each case. This is the measure of how homicide cases are distributed and has implications for allocation of police resources.
 
-(Figure \@ref(fig:homicideYear)) shows the number of homicide occurrence each year from 2004-2020.
-```{r}
+
+```{r, echo=FALSE}
+
+# Make tibble for individual variable
+
 tibble_occurrence_year <- 
   tibble(cleaned_homicide_data) |>
   count(Occurrence_year)
@@ -89,7 +94,9 @@ tibble_homicide_type <-
 
 ```
 
-```{r homicideYear, fig.cap = "Homicide Occurrences each Year(2004-2020)", echo = FALSE}
+(Figure \@ref(fig:homicideYear)) shows the number of homicide occurrence each year from 2004-2020.
+
+```{r homicideYear, fig.cap = "Homicide Occurrences each Year (2004-2020)", echo = FALSE, warning=FALSE, message=FALSE}
 
 tibble_occurrence_year |> 
   ggplot(aes(x = Occurrence_year, y = n, fill = n)) +
@@ -97,11 +104,12 @@ tibble_occurrence_year |>
   xlab("Year of Homicide Occurrences") +
   ylab("Number of Homicide Cases") +
   theme_set(theme_bw())
+
 ```
 
 (Figure \@ref(fig:homicideNeighbourhood)) shows the top 10 neighbourhoods with most number of homicide cases
 
-```{r homicideNeighbourhood, fig.cap = "Top 10 Neighbourhoods with Most Homicide Occurrences (2004-2020)", echo=FALSE}
+```{r homicideNeighbourhood, fig.cap = "Top 10 Neighbourhoods with Most Homicide Occurrences (2004-2020)", echo=FALSE, warning=FALSE, message=FALSE}
 
 tibble_neighbourhood |> 
   group_by(Neighbourhood, n) |>
@@ -119,62 +127,17 @@ tibble_neighbourhood |>
 
 (Figure \@ref(fig:homicidetype)) shows number of each homicide type
 
-```{r homicidetype, fig.cap = "Type of Homicide Cases", echo=FALSE}
+```{r homicidetype, fig.cap = "Type of Homicide Cases (2004-2020", echo=FALSE, warning=FALSE, message=FALSE}
 
 tibble_homicide_type |>
   ggplot(aes(reorder(x = Homicide_Type, n),
              y = n, 
-             fill = n)) +
+             fill = Homicide_Type)) +
   geom_col() +
   xlab("Type of Homicide") +
   ylab("Number of Homicide Cases") +
   theme_set(theme_bw())
 ```
-
-
-Our data is of homicide cases (Figure \@ref(fig:bills)).
-
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
-
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
-
-# This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk way more about it. 
-
-
-
-# Model
-
-\begin{equation}
-Pr(\theta | y) = \frac{Pr(y | \theta) Pr(\theta)}{Pr(y)}  (\#eq:bayes)
-\end{equation}
-
-Equation \@ref(eq:bayes) seems useful, eh?
-
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
 # Results
