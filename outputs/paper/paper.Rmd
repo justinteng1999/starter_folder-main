@@ -1,10 +1,10 @@
 ---
-title: "Homocides in Toronto from 2004-2020"
+title: "Homocides in Toronto Neighbourhoods from 2004-2020"
 author: 
   Justin Teng 
 thanks: "Code and data are available at: https://github.com/justinteng1999/starter_folder-main"
 date: "06 February 2022"
-abstract: "Understanding the datasets of homicides in The City of Toronto Neighborhoods are crucial for determining the distribution of police resources among the neighborhoods. From we obtain this data of homicide cases in Toronto between the years of 2004-2020. We find that except the years between 2010-2015, we have relatively high number of homicide cases.  Our findings have implication for allocation of police surveillance, police patrols, and the management of weapons registration."
+abstract: "Understanding the datasets of homicides in The City of Toronto Neighbourhoods are crucial for determining the distribution of police resources among the neighborhoods. From the City of Toronto Open Portal, we obtain and analyze this data of homicide cases in Toronto neighbourhoods between the years of 2004-2020. We find that homicide occurrences have been slowly increasing each year from 2011 to 2020. Also, certain neighbourhoods in Toronto have relatively higher numbers of homicide occurrences. Moreover, there is a significant large percentage of homicides that are firearm-related. Our findings have implication for allocation of police surveillance, police patrols, and the management of weapons registration."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -20,25 +20,24 @@ library(palmerpenguins)
 
 # Introduction
 
-First paragraph is going to be motivational and broad.
+As the largest city in Canada, Toronto has a population of 6.5 million people. However, from 2002-2020, it is also the Metropolitan Area with the most homicide cases in Canada each year according to Statistics Canada[@citehomicideincanada]. Despite that overall police-reported crime in Canada has decreased in 2020, there are still 743 homicide cases being reported by the police.  Toronto had the highest number of homicides of all Metropolitan Areas in 2020 with 105 victims, which was a decrease of 25 victims from 2019 [@citehomicideincanada2020]
+Therefore, the analysis on this dataset of homicides in the neighbourhoods of Toronto from the year of 2004 to 2020 will be crucial in terms of understanding the occurrences of homicide over the years. 
 
-Second Paragraph is about what was done and what was found.
+This dataset includes information on all reported homicides from 2004 to 2020 in the 140 Neighbourhoods of Toronto. However, the numbers by Division and Neighbourhood may not reflect the exact time or count of occurrences reported within these geographies, for the location of crime occurrences have been deliberately offset to the nearest road intersection for the privacy of parties involved in the occurrence [@citeopendatatoronto]. From the data, we find that homicide occurrences have been slowly increasing each year from 2011 to 2020. Also, certain neighbourhoods in Toronto have relatively higher number of homicide occurrences. Furthermore, 52% of the homicide cases are firearm-related. 
 
-Third Paragraph about implication.
+Our findings have important implication for the allocation of police surveillance and patrols among different neighbourhoods in Toronto. For instance, neighbourhoods with the highest number of homicide occurrences, such as  Mosspark and Malvern, should have increase their police surveillance and patrol frequency. Also, due to the significant high percentage of firearms involvement in homicides, we know it is necessary to improve the management of weapons registration and the firearm-related laws. 
+
 
 The remainder of this paper is: Section \@ref(data) explains the data. Section \@ref(results) covers results
 
 # Data
 
-Paragraph or two introducing the dataset broadly.
-
-We obtain our dataset from the City of Toronto open Data Portal, using the 'opendatatoronto' package[@citeopendatatoronto] and statistical programming language R [@citeR].
-
-Read and clean the required data for my exploratory data analysis.
+In order to better understand and analyze occurrences of homicides over the years among different neighbourhoods in Toronto, I obtain the dataset from the City of Toronto open Data Portal, using the 'opendatatoronto' package[@citeopendatatoronto] and statistical programming language R [@citeR]. The raw data includes all reported homicides in 140 neighbourhoods within the Greater Toronto Area from year 2004-2020, as well as the type of homicide in each case. However, there are also some variables that are not necessary for our analysis, such as Event Unique Id, Division ID, Object ID, Hood ID and Geometry. Therefore, I first cleaned out the unnecessary variables and extract the required data for the exploratory data analysis. During this process, I used R [@citeR], tidyverse[@citeTidyverse] and dplyr[@citedplyr].
 
 ```{r clean_data, echo = FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(knitr)
+library(dplyr)
 
 homicide <- 
   read.csv(here::here("inputs/data/homocide.csv"))
