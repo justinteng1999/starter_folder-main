@@ -20,25 +20,28 @@ library(palmerpenguins)
 
 # Introduction
 
-As the largest city in Canada, Toronto has a population of 6.5 million people. However, from 2002-2020, it is also the Metropolitan Area with the most homicide cases in Canada each year according to Statistics Canada[@citehomicideincanada]. Despite that overall police-reported crime in Canada has decreased in 2020, there are still 743 homicide cases being reported by the police.  Toronto had the highest number of homicides of all Metropolitan Areas in 2020 with 105 victims, which was a decrease of 25 victims from 2019 [@citehomicideincanada2020]
+As the largest city in Canada, Toronto has a population of about 6.5 million people. However, from 2002-2020, it is also the Metropolitan Area with the most homicide cases in Canada each year according to Statistics Canada[@citehomicideincanada]. Despite that overall police-reported crime in Canada has decreased in 2020, there are still 743 homicide cases being reported by the police.  Toronto had the highest number of homicides of all Canada's Metropolitan Areas in 2020 with 105 victims, which was a decrease of 25 victims from 2019 [@citehomicideincanada2020].
 Therefore, the analysis on this dataset of homicides in the neighbourhoods of Toronto from the year of 2004 to 2020 will be crucial in terms of understanding the occurrences of homicide over the years. 
 
 This dataset includes information on all reported homicides from 2004 to 2020 in the 140 Neighbourhoods of Toronto. However, the numbers by Division and Neighbourhood may not reflect the exact time or count of occurrences reported within these geographies, for the location of crime occurrences have been deliberately offset to the nearest road intersection for the privacy of parties involved in the occurrence [@citeopendatatoronto]. From the data, we find that homicide occurrences have been slowly increasing each year from 2011 to 2020. Also, certain neighbourhoods in Toronto have relatively higher number of homicide occurrences. Furthermore, 52% of the homicide cases are firearm-related. 
 
-Our findings have important implication for the allocation of police surveillance and patrols among different neighbourhoods in Toronto. For instance, neighbourhoods with the highest number of homicide occurrences, such as  Mosspark and Malvern, should have increase their police surveillance and patrol frequency. Also, due to the significant high percentage of firearms involvement in homicides, we know it is necessary to improve the management of weapons registration and the firearm-related laws. 
+Our findings have important implications for the allocation of police surveillance and patrols among different neighbourhoods in Toronto. For instance, neighbourhoods with the highest number of homicide occurrences, such as  Mosspark and Malvern, should have increase their police surveillance and patrol frequency. Also, due to the significant high percentage of firearms involvement in homicides, we know it is necessary to improve the management of weapons registration and firearm-related laws. 
 
 
-The remainder of this paper is: Section \@ref(data) explains the data. Section \@ref(results) covers results
+The remainder of this paper is: Section \@ref(data) explains the data. 
+
 
 # Data
-
-In order to better understand and analyze occurrences of homicides over the years among different neighbourhoods in Toronto, I obtain the dataset from the City of Toronto open Data Portal, using the 'opendatatoronto' package[@citeopendatatoronto] and statistical programming language R [@citeR]. The raw data includes all reported homicides in 140 neighbourhoods within the Greater Toronto Area from year 2004-2020, as well as the type of homicide in each case. However, there are also some variables that are not necessary for our analysis, such as Event Unique Id, Division ID, Object ID, Hood ID and Geometry. Therefore, I first cleaned out the unnecessary variables and extract the required data for the exploratory data analysis. During this process, I used R [@citeR], tidyverse[@citeTidyverse] and dplyr[@citedplyr].
+In order to better understand and analyze occurrences of homicides over the years among different neighbourhoods in Toronto, I obtain the dataset from the City of Toronto open Data Portal, using the 'opendatatoronto' package[@citeopendatatoronto] and statistical programming language R [@citeR]. The raw data includes all reported homicides in 140 neighbourhoods within the Greater Toronto Area from year 2004-2020, as well as the type of homicide in each case. However, there are also some variables that are not necessary for our analysis, such as Event Unique Id, Division ID, Object ID, Hood ID and Geometry. Therefore, I first read in the csv file of the dataset and cleaned out the unnecessary variables from it. Then, I extracted out the required variables for the exploratory data analysis. To accomplish these goals, I used R [@citeR], tidyverse[@citeTidyverse] and dplyr[@citedplyr].
 
 ```{r clean_data, echo = FALSE, warning=FALSE, message=FALSE}
+
+# Load the require packages 
 library(tidyverse)
 library(knitr)
 library(dplyr)
 
+# Read in the csv file 
 homicide <- 
   read.csv(here::here("inputs/data/homocide.csv"))
 
@@ -50,7 +53,7 @@ cleaned_homicide_data <-
          Neighbourhood)
 ```
 
-Then show an extract of the dataset (Table \@ref(tab:dataextract)) .
+After cleaning data and selecting the necessary variables, we can now show an extract of the dataset (Table \@ref(tab:dataextract)). 
 
 ```{r dataextract, echo = FALSE}
 
@@ -58,7 +61,7 @@ cleaned_homicide_data |>
   select(Occurrence_year, Neighbourhood, Homicide_Type) |>
   slice(1:10) |> 
   kable(
-    caption = "First ten rows of a dataset of a dataset that shows homicide occurrence",
+    caption = "First Ten Rows of a Dataset that Shows Homicide Occurrences",
     col.names = c("Year of Occurrences,",
                   "Neighborhood of Occurences", "Type of Homicide"),
     digits = 1,
@@ -67,12 +70,7 @@ cleaned_homicide_data |>
   )
 ```
 
-
-Paragraph or two more about Table  \@ref(tab:dataextract).
-
-
-
-We are interested in the number of homicide occurrence each year from 2004-2020, and the neighbourhoods with high number of homicide cases, as well as the type of homicide in each case. This is the measure of how homicide cases are distributed and has implications for allocation of police resources.
+We are interested in the number of homicide occurrences each year, and the neighbourhoods with highest number of homicide cases, as well as the type of homicide in each case. This is the measure of how different types of homicide cases are distributed throughout the years. Most importantly, it has implications for allocation of police resources. In order to obtain the total number of homicides with each variable, I sum up the occurrences of homicide for every item in each variable, and then I used tibble [@citetibble] to store the values within each variable. 
 
 
 ```{r, echo=FALSE}
@@ -82,7 +80,7 @@ We are interested in the number of homicide occurrence each year from 2004-2020,
 tibble_occurrence_year <- 
   tibble(cleaned_homicide_data) |>
   count(Occurrence_year)
-
+       
 tibble_neighbourhood <- 
   tibble(cleaned_homicide_data) |>
   count(Neighbourhood)
@@ -93,7 +91,7 @@ tibble_homicide_type <-
 
 ```
 
-(Figure \@ref(fig:homicideYear)) shows the number of homicide occurrence each year from 2004-2020.
+(Figure \@ref(fig:homicideYear)) shows the number of homicide occurrence each year from 2004-2020. The barplot was generated using ggplot[@citeggplot2]. From the graph we obtained, we can see that the number of homicides were relatively high between 2004-2010. However, number of homicides were significantly low between 2011-2015, with 2011 as the minimum number of 51 homicide cases. Nonetheless, the number of homicides were slowly increasing each year until reaching its peak with the maximum of 97 cases on 2018. In the year of 2020, it is believed that the number of homicides had decreased in relationship to the rise of Covid-19 Pandemic[@citehomicideincanada2020]. 
 
 ```{r homicideYear, fig.cap = "Homicide Occurrences each Year (2004-2020)", echo = FALSE, warning=FALSE, message=FALSE}
 
@@ -106,7 +104,7 @@ tibble_occurrence_year |>
 
 ```
 
-(Figure \@ref(fig:homicideNeighbourhood)) shows the top 10 neighbourhoods with most number of homicide cases
+(Figure \@ref(fig:homicideNeighbourhood)) shows the top 10 neighbourhoods with most number of homicide occurrences, and they are ordered accordingly. The barplot was generated using ggplot[@citeggplot2].
 
 ```{r homicideNeighbourhood, fig.cap = "Top 10 Neighbourhoods with Most Homicide Occurrences (2004-2020)", echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -124,7 +122,7 @@ tibble_neighbourhood |>
   theme_set(theme_bw())
 ```
 
-(Figure \@ref(fig:homicidetype)) shows number of each homicide type
+(Figure \@ref(fig:homicidetype)) shows number of homicide occurrences for each homicide type. The barplot was generated using ggplot[@citeggplot2]. From the graph we obtained, we can see there are 608 homicide cases of that are caused by shooting, which is more than half of the total homicide occurrences. Having the high percentage of 52% of all homicide cases, firearm-related homicides was the main type of homicides throughout 2004-2020. 
 
 ```{r homicidetype, fig.cap = "Type of Homicide Cases (2004-2020", echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -138,31 +136,6 @@ tibble_homicide_type |>
   theme_set(theme_bw())
 ```
 
-
-# Results
-
-# Discussion
-
-## First discussion point
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional details
 
 
 \newpage
